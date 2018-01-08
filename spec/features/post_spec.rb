@@ -28,6 +28,15 @@ describe 'navigate' do
     end
   end
   
+  describe 'new' do
+    it 'has a link from the home page' do
+      visit root_path
+      
+      click_link("new_post_from_nav")
+      expect(page.status_code).to eq(200)
+    end
+  end
+  
   describe 'creation' do
     before do
       visit new_post_path
@@ -52,5 +61,29 @@ describe 'navigate' do
       
       expect(User.last.posts.last.rationale).to eq("User_Association")
     end
+  end
+  
+  describe 'edit' do
+    before do
+      @post = FactoryGirl.create(:post) 
+    end
+    
+    it 'can be reached by clicking edit on the index page' do
+      visit posts_path
+      
+      click_link("edit_#{@post.id}")
+      expect(page.status_code).to eq(200)
+    end
+    
+    it 'can be edited' do
+      visit edit_post_path(@post)
+      fill_in 'post[date]', with: Date.today
+      fill_in 'post[rationale]', with: "User_Association"
+      click_on "Save"
+      
+      expect(page.status_code).to eq(200)
+      
+    end
+    
   end
 end
